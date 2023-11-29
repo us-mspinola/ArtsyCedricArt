@@ -74,9 +74,6 @@ public class GetAllApiArtwork {
 
                 for (Artwork artwork : artworks) {
 
-                    ;
-
-
                         artwork.setTitle(MyDBUtils.cleanString(artwork.getTitle()));
                         artwork.setThumbnail(MyDBUtils.cleanString(artwork.getThumbnail()));
                         artwork.setUrl(MyDBUtils.cleanString(artwork.getUrl()));
