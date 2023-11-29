@@ -119,6 +119,52 @@ public class DBStorage {
     }
 
 
+
+   public void insertArtworkArtist(Artwork artwork, Artist artist)
+    {
+
+        if (artworkExists(artwork) && artistExists(artist))
+        {
+            String sqlInsert = "insert into Created_By (id_Artwork, id_Artist) values ('" +
+                    artwork.getId() + "','" +
+                    artist.getId() +
+                    "');";
+
+            System.out.println("insert into Created_By (id_Artwork, id_Artist)  " + sqlInsert);
+
+            try (Connection connection = MyDBUtils.get_connection(MyDBUtils.db_type.DB_MYSQL,
+                    MyDBUtils.DB_SERVER, MyDBUtils.DB_PORT, MyDBUtils.DB_NAME, MyDBUtils.DB_USER, MyDBUtils.DB_PWD);) {
+                MyDBUtils.exec_sql(connection, sqlInsert);
+            } catch (SQLException e) {
+                System.out.println("exec_sql:" + sqlInsert + " Error: " + e.getMessage());
+            }
+
+        }
+
+
+    }
+
+
+    private boolean artistExists(Artist artist)
+    {
+        boolean exists= false;
+
+        String where= "id_Artist='" + artist.getId()+"'";
+
+        System.out.println("artistExists artistExists artistExists" + where );
+
+        try (Connection connection = MyDBUtils.get_connection(MyDBUtils.db_type.DB_MYSQL,
+                MyDBUtils.DB_SERVER,MyDBUtils.DB_PORT,MyDBUtils.DB_NAME,MyDBUtils.DB_USER,MyDBUtils.DB_PWD);){
+
+            exists= MyDBUtils.exist(connection,"Artist", where );
+
+        } catch (SQLException e) {
+            System.out.println("exec_sql:" + where+ " Error: " + e.getMessage());
+        }
+
+        return exists;
+    }
+
     private boolean artworkExists(Artwork newArtwork)
     {
         boolean exists= false;

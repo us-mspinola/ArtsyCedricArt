@@ -18,10 +18,10 @@ import java.util.List;
 
 public class GetAllApiGenes {
 
-    public static void searchAllGenes(String xappToken) {
+    public static void searchAllGenes(String xappToken, int size) {
 
 
-        String apiUrl = "https://api.artsy.net/api/genes?size=10";
+        String apiUrl = "https://api.artsy.net/api/genes?size=" + size;
 
         OkHttpClient client = new OkHttpClient();
 
@@ -62,9 +62,9 @@ public class GetAllApiGenes {
 
                    idGene= gene.getId();
 
-                    GetAllApiArtists.searchAllArtist (xappToken, gene.getArtistsLink(),20);
+                    GetAllApiArtists.searchAllArtist (xappToken, gene.getArtistsLink(),10);
 
-                    GetAllApiArtwork.searchAllArtworks(xappToken, gene.getArtworksLink(),idGene,30);
+                    GetAllApiArtwork.searchAllArtworks(xappToken, gene.getArtworksLink(),idGene,10);
 
                 }
 

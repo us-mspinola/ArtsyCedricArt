@@ -6,6 +6,7 @@ import com.google.gson.reflect.TypeToken;
 import g7.upskill.ips.LigacaoArtsy;
 import g7.upskill.ips.MyDBUtils;
 import g7.upskill.ips.adapters.LocalDateAdapter;
+import g7.upskill.ips.model.Artist;
 import g7.upskill.ips.model.Artwork;
 import g7.upskill.ips.model.Gene;
 import g7.upskill.ips.persistence.DBStorage;
@@ -82,6 +83,9 @@ public class GetAllApiArtwork {
 
                         storage.createArtwork(artwork);
 
+                        // verificar a ligação entre obra de arte e artista
+                         linkArtworksToArtists( xappToken, artwork.getArtistsLink(), artwork,size);
+
                         // para cada artwork ir buscar o link da galeria
 
 
@@ -100,6 +104,53 @@ public class GetAllApiArtwork {
 
 
     }
+
+
+    public static void linkArtworksToArtists(String xappToken, String apiUrl,Artwork artwork, int size) {
+
+
+        OkHttpClient client = new OkHttpClient();
+
+        Gson gson = new GsonBuilder().create();
+
+        System.out.println(apiUrl);
+        Request request = new Request.Builder()
+                .url(apiUrl)
+                .header("X-XAPP-Token", xappToken)
+                .build();
+
+
+        DBStorage storage = new DBStorage();
+
+        try {
+            Response response = client.newCall(request).execute();
+            if (response.isSuccessful()) {
+                // Processar a resposta aqui conforme necessário
+                String responseBody = response.body().string();
+                JsonParser parser = new JsonParser();
+                JsonObject jsonObject = (JsonObject)parser.parse(responseBody);
+                JsonArray data = jsonObject.getAsJsonObject("_embedded").getAsJsonArray("artists");
+                System.out.println("data " + data);
+                // Deserialize a list of genes
+                List<Artist>  artists = new ArrayList<>();
+                Type listType = new TypeToken<ArrayList<Artist>>(){}.getType();
+                artists = gson.fromJson(data, listType);
+
+
+                for (Artist artist : artists) {
+
+                    storage.insertArtworkArtist(artwork,artist);
+                }
+
+            } else {
+                System.out.println("Falha na solicitação à API. Código de resposta: " + response.code());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
 
 
     public static void main(String[] args){

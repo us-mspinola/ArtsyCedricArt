@@ -23,6 +23,11 @@ public class Artwork {
         return links.partner.href;
     }
 
+
+    public String getArtistsLink() {
+        return links.artists.href;
+    }
+
     public String getGenesLink() {
         System.out.println("Artwork getGenesLink " + links.genes.href);
         return links.genes.href;
